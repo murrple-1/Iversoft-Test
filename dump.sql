@@ -29,13 +29,15 @@ VALUES
 
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `user_roles_id` int NOT NULL,
-  `user_addresses_id` int NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `user_roles_id` int NOT NULL,
+  `user_addresses_id` int NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE (`username`),
+  UNIQUE (`email`),
   FOREIGN KEY (`user_roles_id`) REFERENCES `user_roles` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`user_addresses_id`) REFERENCES `user_addresses` (`id`) ON DELETE CASCADE
 );

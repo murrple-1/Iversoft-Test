@@ -15,6 +15,7 @@ const (
 
 var (
 	dbConnectionString string
+	isDebug            bool
 )
 
 func init() {
@@ -23,15 +24,25 @@ func init() {
 	if !ok {
 		dbConnectionString = defautlDBConnectionString
 	}
+
+	if _isDebug, ok := os.LookupEnv("DEBUG"); ok {
+		isDebug = (_isDebug == "true")
+	} else {
+		isDebug = false
+	}
 }
 
 func OpenDB() (*gorm.DB, error) {
-	return gorm.Open("mysql", dbConnectionString)
+	db, err := gorm.Open("mysql", dbConnectionString)
+	if err == nil && isDebug {
+		db = db.Debug()
+	}
+	return db, err
 }
 
 type UserRole struct {
-	ID    int     `gorm:"primary_key; not null; auto_increment; column:id" json:"-"`
-	Label *string `gorm:"not null; column:label" json:"label"`
+	ID    int    `gorm:"primary_key; not null; auto_increment; column:id" json:"-"`
+	Label string `gorm:"not null; column:label" json:"label"`
 }
 
 type UserAddress struct {
@@ -41,14 +52,13 @@ type UserAddress struct {
 	City       *string `gorm:"size:255;column:city" json:"city"`
 	Country    *string `gorm:"size:255;column:country" json:"country"`
 	PostalCode *string `gorm:"size:255;column:postal_code" json:"postalCode"`
-	UserId     int     `gorm:"not null; column:users_id" json:"-"`
 }
 
 type User struct {
 	ID        int         `gorm:"primary_key; not null; auto_increment; column:id" json:"id"`
-	Username  string      `gorm:"size: 255; not null; column:username" json:"username"`
-	Email     string      `gorm:"size: 255; not null; column:email" json:"email"`
-	CreatedAt *time.Time  `gorm:"not null; column:created_at" json:"createdAt"`
+	Username  string      `gorm:"size: 255; not null; unique; column:username" json:"username"`
+	Email     string      `gorm:"size: 255; not null; unique; column:email" json:"email"`
+	CreatedAt time.Time   `gorm:"not null; column:created_at" json:"createdAt"`
 	UpdatedAt *time.Time  `gorm:"column:updated_at" json:"updatedAt"`
 	Role      UserRole    `gorm:"foreignkey:RoleId" json:"role"`
 	RoleId    int         `gorm:"not null; column:user_roles_id" json:"-"`
