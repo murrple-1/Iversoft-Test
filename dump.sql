@@ -1,73 +1,48 @@
-# Dump of table user_addresses
-# ------------------------------------------------------------
+CREATE TABLE `user_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
 
-DROP TABLE IF EXISTS `user_addresses`;
+INSERT INTO `user_roles` (`id`, `label`)
+VALUES
+	(1, 'Admin'),
+	(2, 'Publisher'),
+	(3, 'Public User');
 
 CREATE TABLE `user_addresses` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `address` varchar(255) DEFAULT NULL,
   `province` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
   `postal_code` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
-LOCK TABLES `user_addresses` WRITE;
-
-INSERT INTO `user_addresses` (`id`, `user_id`, `address`, `province`, `city`, `country`, `postal_code`)
+INSERT INTO `user_addresses` (`id`, `address`, `province`, `city`, `country`, `postal_code`)
 VALUES
-	(1,1,'123 fake street','Ontario','Ottawa','Canada','123 w4t'),
-	(2,2,'123 queen street','Quebec','Gatineau','Canada','123 tdf'),
-	(3,3,'123 major road','Ontariofdgdgdfg','Ottawa','Canada','145 w4t'),
-	(4,4,'123 blue street','Ontario','Ottawa','Canada','145 lpo');
-
-UNLOCK TABLES;
-
-# Dump of table user_roles
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `user_roles`;
-
-CREATE TABLE `user_roles` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `label` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-LOCK TABLES `user_roles` WRITE;
-
-INSERT INTO `user_roles` (`id`, `label`)
-VALUES
-	(1,'Admin'),
-	(2,'Publisher'),
-	(3,'Public User');
-
-UNLOCK TABLES;
-
-# Dump of table users
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `users`;
+	(1, '123 fake street', 'Ontario', 'Ottawa', 'Canada', '123 w4t'),
+	(2, '123 queen street', 'Quebec','Gatineau','Canada', '123 tdf'),
+	(3, '123 major road', 'Ontariofdgdgdfg', 'Ottawa','Canada', '145 w4t'),
+	(4, '123 blue street', 'Ontario', 'Ottawa', 'Canada', '145 lpo');
 
 CREATE TABLE `users` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_roles_id` int(11) unsigned DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_roles_id` int NOT NULL,
+  `user_addresses_id` int NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_roles_id`) REFERENCES `user_roles` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`user_addresses_id`) REFERENCES `user_addresses` (`id`) ON DELETE CASCADE
+);
 
-LOCK TABLES `users` WRITE;
-
-INSERT INTO `users` (`id`, `user_roles_id`, `username`, `email`, `created_at`, `updated_at`)
+INSERT INTO `users` (`id`, `user_roles_id`, `user_addresses_id`, `username`, `email`, `created_at`)
 VALUES
-	(1,1,'I_Admin','admin@test.com','2017-05-20 12:42:53','2017-05-20 12:42:53'),
-	(2,2,'I_Publish','publisher@test.com','2017-05-20 13:05:53','2017-05-22 15:08:53'),
-	(3,3,'I_Use','user@test.com','2017-05-21 13:05:53','2017-05-21 13:05:53'),
-	(4,3,'I_Use_Too','user2@test.com','2017-05-22 14:05:53','2017-05-22 14:05:53');
-
-UNLOCK TABLES;
+	(1, 1, 1, 'I_Admin', 'admin@test.com', '2017-05-20 12:42:53'),
+	(2, 2, 2, 'I_Publish', 'publisher@test.com', '2017-05-20 13:05:53'),
+	(3, 3, 3, 'I_User', 'user@test.com', '2017-05-21 13:05:53'),
+	(4, 3, 4, 'I_User_Too', 'user2@test.com', '2017-05-22 14:05:53');
