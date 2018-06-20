@@ -32,7 +32,7 @@ func init() {
 	}
 }
 
-func OpenDB() (*gorm.DB, error) {
+func openDB() (*gorm.DB, error) {
 	db, err := gorm.Open("mysql", dbConnectionString)
 	if err == nil && isDebug {
 		db = db.Debug()
@@ -40,11 +40,13 @@ func OpenDB() (*gorm.DB, error) {
 	return db, err
 }
 
+// UserRole represents an ORM mapping for `user_roles`
 type UserRole struct {
 	ID    int    `gorm:"primary_key; not null; auto_increment; column:id" json:"-"`
 	Label string `gorm:"not null; column:label" json:"label"`
 }
 
+// UserAddress represents an ORM mapping for `user_addresses`
 type UserAddress struct {
 	ID         int     `gorm:"primary_key; not null; auto_increment; column:id" json:"-"`
 	Address    *string `gorm:"size:255;column:address" json:"address"`
@@ -54,14 +56,15 @@ type UserAddress struct {
 	PostalCode *string `gorm:"size:255;column:postal_code" json:"postalCode"`
 }
 
+// User represents an ORM mapping for `users`
 type User struct {
 	ID        int         `gorm:"primary_key; not null; auto_increment; column:id" json:"id"`
 	Username  string      `gorm:"size: 255; not null; unique; column:username" json:"username"`
 	Email     string      `gorm:"size: 255; not null; unique; column:email" json:"email"`
 	CreatedAt time.Time   `gorm:"not null; column:created_at" json:"createdAt"`
 	UpdatedAt *time.Time  `gorm:"column:updated_at" json:"updatedAt"`
-	Role      UserRole    `gorm:"foreignkey:RoleId" json:"role"`
-	RoleId    int         `gorm:"not null; column:user_roles_id" json:"-"`
-	Address   UserAddress `gorm:"foreignkey:AddressId" json:"address"`
-	AddressId int         `gorm:"not null; column:user_addresses_id" json:"-"`
+	Role      UserRole    `gorm:"foreignkey:RoleID" json:"role"`
+	RoleID    int         `gorm:"not null; column:user_roles_id" json:"-"`
+	Address   UserAddress `gorm:"foreignkey:AddressID" json:"address"`
+	AddressID int         `gorm:"not null; column:user_addresses_id" json:"-"`
 }

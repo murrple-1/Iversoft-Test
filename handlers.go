@@ -16,7 +16,7 @@ const (
 	maxBodyBytes = 1048576
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+func getIndexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Welcome!\n")
 }
 
@@ -35,7 +35,7 @@ func writeErrorResponse(w http.ResponseWriter, statusCode int, message string) {
 	io.WriteString(w, message)
 }
 
-func User_GET(w http.ResponseWriter, r *http.Request) {
+func getUserHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	id, err := strconv.Atoi(vars["id"])
@@ -44,7 +44,7 @@ func User_GET(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := OpenDB()
+	db, err := openDB()
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +62,7 @@ func User_GET(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func User_POST(w http.ResponseWriter, r *http.Request) {
+func postUserHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, maxBodyBytes))
 	if err != nil {
 		panic(err)
@@ -72,19 +72,23 @@ func User_POST(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	var _json_ interface{}
-	if err := json.Unmarshal(body, &_json_); err != nil {
-		writeErrorResponse(w, http.StatusUnprocessableEntity, "JSON body could not be parsed")
-		return
+	var jsonMap map[string]interface{}
+	{
+		var jsonBody interface{}
+		if err := json.Unmarshal(body, &jsonBody); err != nil {
+			writeErrorResponse(w, http.StatusUnprocessableEntity, "JSON body could not be parsed")
+			return
+		}
+
+		var ok bool
+		jsonMap, ok = jsonBody.(map[string]interface{})
+		if !ok {
+			writeErrorResponse(w, http.StatusBadRequest, "JSON body must be object")
+			return
+		}
 	}
 
-	_json, ok := _json_.(map[string]interface{})
-	if !ok {
-		writeErrorResponse(w, http.StatusBadRequest, "JSON body must be object")
-		return
-	}
-
-	db, err := OpenDB()
+	db, err := openDB()
 	if err != nil {
 		panic(err)
 	}
@@ -94,115 +98,138 @@ func User_POST(w http.ResponseWriter, r *http.Request) {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = nil
 
-	if _username, ok := _json["username"]; ok {
-		if username, ok := _username.(string); ok {
-			user.Username = username
-		} else {
+	{
+		tUsername, ok := jsonMap["username"]
+		if !ok {
+			writeErrorResponse(w, http.StatusBadRequest, "'username' missing")
+			return
+		}
+
+		username, ok := tUsername.(string)
+		if !ok {
 			writeErrorResponse(w, http.StatusBadRequest, "'username' must be string")
 			return
 		}
-	} else {
-		writeErrorResponse(w, http.StatusBadRequest, "'username' missing")
-		return
+
+		user.Username = username
 	}
 
-	if _email, ok := _json["email"]; ok {
-		if email, ok := _email.(string); ok {
-			user.Email = email
-		} else {
+	{
+		tEmail, ok := jsonMap["email"]
+		if !ok {
+			writeErrorResponse(w, http.StatusBadRequest, "'email' missing")
+			return
+		}
+
+		email, ok := tEmail.(string)
+		if !ok {
 			writeErrorResponse(w, http.StatusBadRequest, "'email' must be string")
 			return
 		}
-	} else {
-		writeErrorResponse(w, http.StatusBadRequest, "'email' missing")
-		return
+
+		user.Email = email
 	}
 
-	var userRole UserRole
-	if _roleLabel, ok := _json["roleLabel"]; ok {
-		if roleLabel, ok := _roleLabel.(string); ok {
-			db.Where(UserRole{Label: roleLabel}).Take(&userRole)
+	{
+		var userRole UserRole
 
-			if userRole.ID <= 0 {
-				writeErrorResponse(w, http.StatusNotFound, "role not found")
-				return
-			}
-		} else {
+		tRoleLabel, ok := jsonMap["roleLabel"]
+		if !ok {
+			writeErrorResponse(w, http.StatusBadRequest, "'roleLabel' missing")
+			return
+		}
+
+		roleLabel, ok := tRoleLabel.(string)
+		if !ok {
 			writeErrorResponse(w, http.StatusBadRequest, "'roleLabel' must be string")
 			return
 		}
-	} else {
-		writeErrorResponse(w, http.StatusBadRequest, "'roleLabel' missing")
-		return
+
+		db.Where(UserRole{Label: roleLabel}).Take(&userRole)
+
+		if userRole.ID <= 0 {
+			writeErrorResponse(w, http.StatusNotFound, "role not found")
+			return
+		}
+
+		user.RoleID = userRole.ID
 	}
-	user.RoleId = userRole.ID
 
-	var userAddress UserAddress
-	if _address, ok := _json["address"]; ok {
-		if address, ok := _address.(map[string]interface{}); ok {
-			if _iAddress, ok := address["address"]; ok {
-				if _iAddress == nil {
-					userAddress.Address = nil
-				} else if iAddress, ok := _iAddress.(string); ok {
-					userAddress.Address = &iAddress
-				} else {
-					writeErrorResponse(w, http.StatusBadRequest, "inner 'address' must be string or null")
-					return
-				}
-			}
+	{
+		var userAddress UserAddress
 
-			if _province, ok := address["province"]; ok {
-				if _province == nil {
-					userAddress.Province = nil
-				} else if province, ok := _province.(string); ok {
-					userAddress.Province = &province
-				} else {
-					writeErrorResponse(w, http.StatusBadRequest, "'province' must be string or null")
-					return
-				}
-			}
-		} else {
+		tAddressMap, ok := jsonMap["address"]
+		if !ok {
+			writeErrorResponse(w, http.StatusBadRequest, "'address' missing")
+			return
+		}
+
+		addressMap, ok := tAddressMap.(map[string]interface{})
+		if !ok {
 			writeErrorResponse(w, http.StatusBadRequest, "'address' must be object")
 			return
 		}
-	} else {
-		writeErrorResponse(w, http.StatusBadRequest, "'address' missing")
-		return
-	}
-	user.Address = userAddress
 
-	tx := db.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
+		tAddress, ok := addressMap["address"]
+		if ok {
+			if tAddress == nil {
+				userAddress.Address = nil
+			} else if iAddress, ok := tAddress.(string); ok {
+				userAddress.Address = &iAddress
+			} else {
+				writeErrorResponse(w, http.StatusBadRequest, "inner 'address' must be string or null")
+				return
+			}
 		}
-	}()
 
-	if tx.Error != nil {
-		panic(tx.Error)
+		tProvince, ok := addressMap["province"]
+		if ok {
+			if tProvince == nil {
+				userAddress.Province = nil
+			} else if province, ok := tProvince.(string); ok {
+				userAddress.Province = &province
+			} else {
+				writeErrorResponse(w, http.StatusBadRequest, "'province' must be string or null")
+				return
+			}
+		}
+		user.Address = userAddress
 	}
 
-	if err := tx.Create(&user).Error; err != nil {
-		tx.Rollback()
-		writeErrorResponse(w, http.StatusConflict, "user already exists")
-		return
-	}
+	{
+		tx := db.Begin()
+		defer func() {
+			if r := recover(); r != nil {
+				tx.Rollback()
+			}
+		}()
 
-	if err := tx.Commit().Error; err != nil {
-		panic(err)
+		if tx.Error != nil {
+			panic(tx.Error)
+		}
+
+		if err := tx.Create(&user).Error; err != nil {
+			tx.Rollback()
+			writeErrorResponse(w, http.StatusConflict, "user already exists")
+			return
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			panic(err)
+		}
 	}
 
 	writeSuccessResponse(w)
 }
 
-func User_PUT(w http.ResponseWriter, r *http.Request) {
+func putUserHander(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func User_DELETE(w http.ResponseWriter, r *http.Request) {
+func deleteUserHander(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Users_GET(w http.ResponseWriter, r *http.Request) {
+func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 }

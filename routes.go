@@ -2,50 +2,50 @@ package main
 
 import "net/http"
 
-type Route struct {
+type route struct {
 	Name        string
 	Method      string
 	Pattern     string
 	HandlerFunc http.HandlerFunc
 }
 
-type Routes []Route
+type routeArray []route
 
-var routes = Routes{
-	Route{
+var routes = routeArray{
+	route{
 		"Index",
 		"GET",
 		"/",
-		Index,
+		getIndexHandler,
 	},
-	Route{
+	route{
 		"User_GET",
 		"GET",
 		"/user/{id}",
-		User_GET,
+		getUserHandler,
 	},
-	Route{
+	route{
 		"User_POST",
 		"POST",
 		"/user",
-		User_POST,
+		postUserHandler,
 	},
-	Route{
+	route{
 		"User_PUT",
 		"PUT",
 		"/user/{id}",
-		User_PUT,
+		putUserHander,
 	},
-	Route{
+	route{
 		"User_DELETE",
 		"DELETE",
 		"/user/{id}",
-		User_DELETE,
+		deleteUserHander,
 	},
-	Route{
+	route{
 		"Users_GET",
 		"GET",
 		"/users",
-		Users_GET,
+		getUsersHandler,
 	},
 }

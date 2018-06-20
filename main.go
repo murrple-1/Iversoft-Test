@@ -16,7 +16,7 @@ func main() {
 		listenAddr = defaultListenAddr
 	}
 
-	router := NewRouter()
+	router := newRouter()
 
 	log.Fatal(http.ListenAndServe(listenAddr, router))
 }
