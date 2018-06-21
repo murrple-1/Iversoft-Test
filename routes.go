@@ -13,12 +13,6 @@ type routeArray []route
 
 var routes = routeArray{
 	route{
-		"Index",
-		"GET",
-		"/",
-		getIndexHandler,
-	},
-	route{
 		"User_GET",
 		"GET",
 		"/user/{id}",

@@ -21,10 +21,6 @@ const (
 	defaultSkip  = 0
 )
 
-func getIndexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Welcome!\n")
-}
-
 func writeJSONResponse(w http.ResponseWriter, v interface{}) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -32,6 +28,7 @@ func writeJSONResponse(w http.ResponseWriter, v interface{}) error {
 }
 
 func writeSuccessResponse(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -319,7 +316,7 @@ func putUserHander(w http.ResponseWriter, r *http.Request) {
 
 	{
 		if tRoleLabel, ok := jsonMap["roleLabel"]; ok {
-			if roleLabel, ok := tRoleLabel.(string); !ok {
+			if roleLabel, ok := tRoleLabel.(string); ok {
 				var userRole UserRole
 				db.Where(UserRole{Label: roleLabel}).Take(&userRole)
 
@@ -455,7 +452,7 @@ func deleteUserHander(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	var user User
-	db.Take(&user, id)
+	db.Preload("Address").Take(&user, id)
 
 	if user.ID <= 0 {
 		writeErrorResponse(w, http.StatusNotFound, "user not found")
