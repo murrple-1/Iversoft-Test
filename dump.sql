@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `user_addresses`;
+DROP TABLE IF EXISTS `user_roles`;
+
 CREATE TABLE `user_roles` (
   `id` int NOT NULL AUTO_INCREMENT,
   `label` varchar(255) NOT NULL,

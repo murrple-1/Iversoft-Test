@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
@@ -14,6 +16,9 @@ import (
 
 const (
 	maxBodyBytes = 1048576
+	defaultCount = 50
+	maxCount     = 1000
+	defaultSkip  = 0
 )
 
 func getIndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -487,7 +492,55 @@ func deleteUserHander(w http.ResponseWriter, r *http.Request) {
 	writeSuccessResponse(w)
 }
 
+func getSkip(values url.Values) (int, error) {
+	if _skip, ok := values["skip"]; ok {
+		if skip, err := strconv.Atoi(_skip[0]); err == nil {
+			if skip < 0 {
+				return 0, errors.New("'skip' must be 0 or more")
+			}
+
+			return skip, nil
+		} else {
+			return 0, errors.New("'skip' must be integer")
+		}
+	} else {
+		return defaultSkip, nil
+	}
+}
+
+func getCount(values url.Values) (int, error) {
+	if _count, ok := values["count"]; ok {
+		if count, err := strconv.Atoi(_count[0]); err == nil {
+			if count < 0 {
+				return 0, errors.New("'count' must be 0 or more")
+			} else if count > maxCount {
+				return 0, errors.New(fmt.Sprintf("'count' must be %d or less", maxCount))
+			}
+
+			return count, nil
+		} else {
+			return 0, errors.New("'count' must be integer")
+		}
+	} else {
+		return defaultCount, nil
+	}
+}
+
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+
+	skip, err := getSkip(query)
+	if err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	count, err := getCount(query)
+	if err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	db, err := openDB()
 	if err != nil {
 		panic(err)
@@ -495,7 +548,7 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	var users []User
-	db.Preload("Role").Preload("Address").Find(&users)
+	db.Preload("Role").Preload("Address").Offset(skip).Limit(count).Find(&users)
 
 	if err := writeJSONResponse(w, users); err != nil {
 		panic(err)
