@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "9318a94c-3460-4bda-8de1-e1c00f3c270c",
+		"name": "Iversoft",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b4027624-c933-47b8-b3a2-1573d97a273b",
+						"type": "text/javascript",
+						"exec": [
+							"pm.variables.set(\"ID\", \"1\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"hello\",\n\t\"email\": \"test@test.com\",\n\t\"roleLabel\": \"Admin\",\n\t\"address\": {\n\t\t\"address\": \"Downing Street Yay!\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/user/{{ID}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"{{ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d5e7756a-ca3f-46f4-ae04-350d8703f71e",
+						"type": "text/javascript",
+						"exec": [
+							"var body = {",
+							"\t\"username\": \"hello\",",
+							"\t\"email\": \"test@test.com\",",
+							"\t\"roleLabel\": \"Admin\",",
+							"\t\"address\": {",
+							"\t\t\"address\": \"Downing Street Yay!\"",
+							"\t}",
+							"};",
+							"",
+							"pm.variables.set(\"BODY\", JSON.stringify(body));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{BODY}}"
+				},
+				"url": {
+					"raw": "localhost:8080/user",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "91f2791a-b229-44f4-b0e8-2620630292f9",
+						"type": "text/javascript",
+						"exec": [
+							"var body = {",
+							"\t\"email\": \"test2@test.com\"",
+							"};",
+							"",
+							"pm.variables.set(\"BODY\", JSON.stringify(body));",
+							"pm.variables.set(\"ID\", \"1\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{BODY}}"
+				},
+				"url": {
+					"raw": "localhost:8080/user/{{ID}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"{{ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b53145f6-c509-404f-a35f-c304c2373979",
+						"type": "text/javascript",
+						"exec": [
+							"pm.variables.set(\"ID\", \"5\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/user/{{ID}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"{{ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8a9c9946-d69a-441d-aa87-7e2dd1e29069",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{BODY}}"
+				},
+				"url": {
+					"raw": "localhost:8080/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
