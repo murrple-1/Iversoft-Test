@@ -36,9 +36,13 @@ Not tested, but use `./scripts/run.sh` as a basis for the run steps.
 
 If you use [Postman](https://www.getpostman.com), you can import `./test/Iversoft.postman_collection.json` to play with the API.
 
+---
+
 `GET /api/user/<id>`
 
 Returns a JSON object for the requested user.
+
+---
 
 `POST /api/user`
 
@@ -60,6 +64,8 @@ Body:
 }
 ```
 
+---
+
 `PUT /api/user/<id>`
 
 Edits an existing user.
@@ -79,9 +85,13 @@ Body:
 }
 ```
 
+---
+
 `DELETE /api/user/<id>`
 
 Deletes a user
+
+---
 
 `GET /api/users?[count=<int>][&skip=<int>]`
 
