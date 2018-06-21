@@ -27,7 +27,7 @@
 					"raw": "{\n\t\"username\": \"hello\",\n\t\"email\": \"test@test.com\",\n\t\"roleLabel\": \"Admin\",\n\t\"address\": {\n\t\t\"address\": \"Downing Street Yay!\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "localhost:8080/user/{{ID}}",
+					"raw": "localhost:8080/api/user/{{ID}}",
 					"host": [
 						"localhost"
 					],
@@ -76,7 +76,7 @@
 					"raw": "{{BODY}}"
 				},
 				"url": {
-					"raw": "localhost:8080/user",
+					"raw": "localhost:8080/api/user",
 					"host": [
 						"localhost"
 					],
@@ -120,7 +120,7 @@
 					"raw": "{{BODY}}"
 				},
 				"url": {
-					"raw": "localhost:8080/user/{{ID}}",
+					"raw": "localhost:8080/api/user/{{ID}}",
 					"host": [
 						"localhost"
 					],
@@ -155,7 +155,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/user/{{ID}}",
+					"raw": "localhost:8080/api/user/{{ID}}",
 					"host": [
 						"localhost"
 					],
@@ -190,7 +190,7 @@
 					"raw": "{{BODY}}"
 				},
 				"url": {
-					"raw": "localhost:8080/users",
+					"raw": "localhost:8080/api/users",
 					"host": [
 						"localhost"
 					],

@@ -3,7 +3,7 @@
 function loadUsers() {
     $.ajax({
         type: 'GET',
-        url: '/users',
+        url: '/api/users',
         dataType: 'json'
     }).done(function (data) {
         var $table = $('table#users');
@@ -57,7 +57,7 @@ function createUserHandler() {
 
     $.ajax({
         type: 'POST',
-        url: '/user',
+        url: '/api/user',
         data: JSON.stringify(payload),
         contentType: 'application/json'
     }).done(function () {
@@ -85,7 +85,7 @@ function editUserHandler() {
 
     $.ajax({
         type: 'PUT',
-        url: ('/user/' + userId),
+        url: ('/api/user/' + userId),
         data: JSON.stringify(payload),
         contentType: 'application/json'
     }).done(function () {
@@ -99,7 +99,7 @@ function editUserHandler() {
 function deleteUser(userId) {
     $.ajax({
         type: 'DELETE',
-        url: ('/user/' + userId)
+        url: ('/api/user/' + userId)
     }).done(function () {
         $('table#users tbody tr[data-id="' + userId + '"]').remove();
     }).fail(function () {
@@ -110,7 +110,7 @@ function deleteUser(userId) {
 function showEditDialog(userId) {
     $.ajax({
         type: 'GET',
-        url: ('/user/' + userId),
+        url: ('/api/user/' + userId),
         dataType: 'json'
     }).done(function (data) {
         var $modal = $('div#edit-user-modal');

@@ -15,31 +15,31 @@ var routes = routeArray{
 	route{
 		"User_GET",
 		"GET",
-		"/user/{id}",
+		"/api/user/{id}",
 		getUserHandler,
 	},
 	route{
 		"User_POST",
 		"POST",
-		"/user",
+		"/api/user",
 		postUserHandler,
 	},
 	route{
 		"User_PUT",
 		"PUT",
-		"/user/{id}",
+		"/api/user/{id}",
 		putUserHander,
 	},
 	route{
 		"User_DELETE",
 		"DELETE",
-		"/user/{id}",
+		"/api/user/{id}",
 		deleteUserHander,
 	},
 	route{
 		"Users_GET",
 		"GET",
-		"/users",
+		"/api/users",
 		getUsersHandler,
 	},
 }
