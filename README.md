@@ -13,6 +13,10 @@
         - Password: `password`
     - Ensure user is granted `SELECT, INSERT, UPDATE, DELETE`, at least
     - Run `mysql -u root -p iversoft < dump.sql`
+    
+### Justification
+
+Please not, the `dump.sql` file is not exactly as sent. I have moved some data around to make it a little easier to work with with my ORM, and also added some foreign keys to improve relationship-iness.
 
 ### Build
 
