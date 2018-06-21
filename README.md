@@ -18,6 +18,8 @@
 
 Please not, the `dump.sql` file is not exactly as sent. I have moved some data around to make it a little easier to work with with my ORM, and also added some foreign keys to improve relationship-iness.
 
+Also, I decided against going with a more modern web app, both due to time constaints in bootstrapping, and because I didn't want to add dependencies to NPM/Grunt/etc, which would add more build steps, so the web-app (in `./app/`) is very 2000s-esque jQuery/Bootstrap. I just want to make clear that I would prefer in a real environment to use minification/Typescript/SASS/etc.
+
 ### Build
 
 #### Linux/MacOS
