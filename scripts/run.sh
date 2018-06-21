@@ -8,6 +8,7 @@ DIR=$(dirname $0)
 #export MYSQL_PASSWORD="password"
 #export MYSQL_HOST=""
 #export MYSQL_DB_NAME="iversoft"
+#export DEBUG="true"
 
 cd $DIR/../
 ./iversoft.out
