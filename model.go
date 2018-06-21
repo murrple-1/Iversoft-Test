@@ -46,6 +46,10 @@ type UserRole struct {
 	Label string `gorm:"not null; column:label" json:"label"`
 }
 
+func (s *UserRole) TableName(db *gorm.DB) string {
+	return "user_roles"
+}
+
 // UserAddress represents an ORM mapping for `user_addresses`
 type UserAddress struct {
 	ID         int     `gorm:"primary_key; not null; auto_increment; column:id" json:"-"`
@@ -54,6 +58,10 @@ type UserAddress struct {
 	City       *string `gorm:"size:255;column:city" json:"city"`
 	Country    *string `gorm:"size:255;column:country" json:"country"`
 	PostalCode *string `gorm:"size:255;column:postal_code" json:"postalCode"`
+}
+
+func (s *UserAddress) TableName(db *gorm.DB) string {
+	return "user_addresses"
 }
 
 // User represents an ORM mapping for `users`
@@ -67,4 +75,8 @@ type User struct {
 	RoleID    int         `gorm:"not null; column:user_roles_id" json:"-"`
 	Address   UserAddress `gorm:"foreignkey:AddressID" json:"address"`
 	AddressID int         `gorm:"not null; column:user_addresses_id" json:"-"`
+}
+
+func (s *User) TableName(db *gorm.DB) string {
+	return "users"
 }
