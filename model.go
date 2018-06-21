@@ -46,6 +46,7 @@ type UserRole struct {
 	Label string `gorm:"not null; column:label" json:"label"`
 }
 
+// TableName overrides `gorm.TableName`` for UserRole
 func (s *UserRole) TableName(db *gorm.DB) string {
 	return "user_roles"
 }
@@ -60,6 +61,7 @@ type UserAddress struct {
 	PostalCode *string `gorm:"size:255;column:postal_code" json:"postalCode"`
 }
 
+// TableName overrides `gorm.TableName`` for UserAddress
 func (s *UserAddress) TableName(db *gorm.DB) string {
 	return "user_addresses"
 }
@@ -77,6 +79,7 @@ type User struct {
 	AddressID int         `gorm:"not null; column:user_addresses_id" json:"-"`
 }
 
+// TableName overrides `gorm.TableName`` for User
 func (s *User) TableName(db *gorm.DB) string {
 	return "users"
 }

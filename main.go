@@ -1,20 +1,30 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 const (
-	defaultListenAddr = ":8080"
+	defaultPort = 8080
 )
 
 func main() {
-	listenAddr, ok := os.LookupEnv("LISTEN_ADDR")
-	if !ok {
-		listenAddr = defaultListenAddr
+	var port int
+	if tPort, ok := os.LookupEnv("PORT"); ok {
+		var err error
+		port, err = strconv.Atoi(tPort)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		port = defaultPort
 	}
+
+	listenAddr := fmt.Sprintf(":%d", port)
 
 	router := newRouter()
 

@@ -2,8 +2,13 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
+)
+
+const (
+	defaultStaticDir = "./app/"
 )
 
 func newRouter() *mux.Router {
@@ -22,7 +27,17 @@ func newRouter() *mux.Router {
 			Handler(handler)
 	}
 
-	router.PathPrefix("/").Handler(logger(http.FileServer(http.Dir("./app/")), "Default"))
+	var (
+		staticDir string
+		ok        bool
+	)
+
+	staticDir, ok = os.LookupEnv("STATIC_DIR")
+	if !ok {
+		staticDir = defaultStaticDir
+	}
+
+	router.PathPrefix("/").Handler(logger(http.FileServer(http.Dir(staticDir)), "Default"))
 
 	return router
 }

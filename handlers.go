@@ -497,12 +497,12 @@ func getSkip(values url.Values) (int, error) {
 			}
 
 			return skip, nil
-		} else {
-			return 0, errors.New("'skip' must be integer")
 		}
-	} else {
-		return defaultSkip, nil
+
+		return 0, errors.New("'skip' must be integer")
 	}
+
+	return defaultSkip, nil
 }
 
 func getCount(values url.Values) (int, error) {
@@ -511,16 +511,16 @@ func getCount(values url.Values) (int, error) {
 			if count < 0 {
 				return 0, errors.New("'count' must be 0 or more")
 			} else if count > maxCount {
-				return 0, errors.New(fmt.Sprintf("'count' must be %d or less", maxCount))
+				return 0, fmt.Errorf("'count' must be %d or less", maxCount)
 			}
 
 			return count, nil
-		} else {
-			return 0, errors.New("'count' must be integer")
 		}
-	} else {
-		return defaultCount, nil
+
+		return 0, errors.New("'count' must be integer")
 	}
+
+	return defaultCount, nil
 }
 
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
