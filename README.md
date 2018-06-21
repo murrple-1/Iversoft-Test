@@ -7,7 +7,7 @@
     - Untested with other versions
     - Ensure your GO environment variables are set up
 * MySQL/MariaSQL
-    - Recommened DB/user setup
+    - Recommended DB/user setup
         - DB Name: `iversoft`
         - User: `iversoft_user`
         - Password: `password`
