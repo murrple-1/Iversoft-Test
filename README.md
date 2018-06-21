@@ -49,7 +49,7 @@ Returns a JSON object for the requested user.
 Creates a new user.
 
 Body:
-```
+```javascript
 {
     "username": <string>,
     "email": <string>,
@@ -71,7 +71,7 @@ Body:
 Edits an existing user.
 
 Body:
-```
+```javascript
 {
     "email": <string>, // optional
     "roleLabel": <string>, // optional
@@ -89,7 +89,7 @@ Body:
 
 `DELETE /api/user/<id>`
 
-Deletes a user
+Deletes a user.
 
 ---
 
@@ -98,4 +98,5 @@ Deletes a user
 Returns a paginated list of users (JSON array of objects).
 
 `count`: similar to SQL `LIMIT`. Defaults to `50`, max `1000`.
+
 `skip`: similar to SQL `OFFSET`. Defaults to `0`.
