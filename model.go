@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -10,7 +11,10 @@ import (
 )
 
 const (
-	defautlDBConnectionString = "iversoft_user:password@/iversoft?parseTime=True"
+	defaultMySQLUser     = "iversoft_user"
+	defaultMySQLPassword = "password"
+	defaultMySQLHost     = ""
+	defaultMySQLDBName   = "iversoft"
 )
 
 var (
@@ -19,11 +23,35 @@ var (
 )
 
 func init() {
-	var ok bool
-	dbConnectionString, ok = os.LookupEnv("DB_CONNECTION_STRING")
+	var (
+		ok            bool
+		mysqlUser     string
+		mysqlPassword string
+		mysqlHost     string
+		mysqlDBName   string
+	)
+
+	mysqlUser, ok = os.LookupEnv("MYSQL_USER")
 	if !ok {
-		dbConnectionString = defautlDBConnectionString
+		mysqlUser = defaultMySQLUser
 	}
+
+	mysqlPassword, ok = os.LookupEnv("MYSQL_PASSWORD")
+	if !ok {
+		mysqlPassword = defaultMySQLPassword
+	}
+
+	mysqlHost, ok = os.LookupEnv("MYSQL_HOST")
+	if !ok {
+		mysqlHost = defaultMySQLHost
+	}
+
+	mysqlDBName, ok = os.LookupEnv("MYSQL_DB_NAME")
+	if !ok {
+		mysqlDBName = defaultMySQLDBName
+	}
+
+	dbConnectionString = fmt.Sprintf("%s:%s@%s/%s?parseTime=True", mysqlUser, mysqlPassword, mysqlHost, mysqlDBName)
 
 	if _isDebug, ok := os.LookupEnv("DEBUG"); ok {
 		isDebug = (_isDebug == "true")
